@@ -12,7 +12,7 @@ export default class Feed extends Component {
         super();
         this.hireRef = firestore.collection('Hiring');
         this.userRef = firestore.collection('Users');
-        this.applyRef = firestore.collection('Job_list').orderBy('chosenDate', 'asc');
+        this.applyRef = firestore.collection('Job_list');
         this.state = {
             show: true,
             jobs: [],
@@ -24,7 +24,7 @@ export default class Feed extends Component {
             ///userId: '',
             isVisible: false,
             skills: '',
-            experience: '',
+            workexperience: '',
             profileImage: '',
             selfdescription: '',
             key: '',
@@ -35,11 +35,8 @@ export default class Feed extends Component {
             jobDescription: '',
             job_seekerImage: '',
             jobWorkType: '',
-            workingLocation: '',
-            lat: '',
-            lng: '',
             job_seeker_salary: '',
-            startDate: '',
+            job_qualification: '',
             searchText: '',
             searchList: []
 
@@ -128,23 +125,20 @@ export default class Feed extends Component {
     getCollection = (querySnapshot) => {
         const jobs = [];
         querySnapshot.forEach((res) => {
-            const { jobname, uniqueId, jobCreatorName, jobdesc, worktype, lat, lng, url, salary, peoplenum, chosenDate, time, location } = res.data();
+            const { jobname, uniqueId, experience, qualification,  jobCreatorname, jobdesc, worktype, url, salary, peoplenum,} = res.data();
             jobs.push({
                 key: res.id,
                 res,
-                jobCreatorName,
+                jobCreatorname,
                 jobname,
                 uniqueId,
                 jobdesc,
-                lat,
-                lng,
                 url,
                 worktype,
                 salary,
                 peoplenum,
-                chosenDate,
-                time,
-                location
+                experience,
+                qualification
             });
         });
         this.setState({
@@ -154,9 +148,7 @@ export default class Feed extends Component {
     }
 
 
-    setExperience = (value) => {
-        this.setState({ ...this.state, experience: value })
-    }
+
 
     setSkills = (value) => {
         this.setState({ ...this.state, skills: value })
@@ -206,16 +198,14 @@ export default class Feed extends Component {
                 //job_seeker_name: doc.get('username'),
                 job_id: doc.get('id'),
                 jobCreatorID: doc.get('uid'),
-                jobCreatorName: doc.get('jobCreatorName'),
+                jobCreatorName: doc.get('jobCreatorname'),
                 jobDescription: doc.get('jobdesc'),
                 job_seekerImage: doc.get('url'),
                 jobname: doc.get('jobname'),
                 jobWorkType: doc.get('worktype'),
-                workingLocation: doc.get('location'),
-                lat: doc.get('lat'),
-                lng: doc.get('lng'),
+                workExperience: doc.get('experience'),
                 job_seeker_salary: doc.get('salary'),
-                startDate: doc.get('chosenDate')
+                job_qualification: doc.get('qualification')
             }, () => {
 
                 console.log("state", this.state)
@@ -223,7 +213,7 @@ export default class Feed extends Component {
 
 
 
-                if (this.state.experience && this.state.skills && this.state.selfdescription) {
+                if ( this.state.skills && this.state.selfdescription) {
 
                     this.hireRef.add({
                         userID: auth.currentUser.uid,
@@ -234,20 +224,16 @@ export default class Feed extends Component {
                         job_seekerImage: this.state.job_seekerImage,
                         jobName: this.state.jobname,
                         job_seekerSalary: this.state.job_seeker_salary,
-                        jobWorkType: this.state.jobWorkType,
-                        workingLocation: this.state.workingLocation.description,
-                        lat: this.state.lat,
-                        lng: this.state.lng,
-                        startDate: this.state.startDate,
+                        jobWorkType: this.state.jobWorkType,                
+                        job_qualification: this.state.job_qualification,
+                        jobExperience: this.state.workExperience,
                         ref_skills: this.state.skills,
-                        ref_experienece: this.state.experience,
                         ref_selfDescribe: this.state.selfdescription
 
 
                     }).then((res) => {
                         this.setState({
                             skills: '',
-                            experience: '',
                             selfdescription: '',
                         });
                         Alert.alert('Congrats!', 'Your Application Has Been Send To The Job Creator');
@@ -265,229 +251,13 @@ export default class Feed extends Component {
         });
 
     }
-    onClickSearch = () => {
-        console.log('state.searchText', this.state.searchText);
 
-
-        firestore.collection('Job_list').where('worktype', '==', this.state.searchText).get().then(querySnapshot => {
-            var searchList = [];
-            var text = this.state.searchText;
-            var lowercase = text.toLowerCase();
-            this.setState({ searchText: lowercase })
-            querySnapshot.forEach(doc => {
-                searchList.push({
-                    key: doc.id,
-                    jobname: doc.get('jobname'),
-                    salary: doc.get('salary'),
-                    url: doc.get('url'),
-                    jobdesc: doc.get('jobdesc'),
-                    jobCreatorName: doc.get('jobCreatorName'),
-                    chosenDate: doc.get('chosenDate'),
-                    worktype: doc.get('worktype'),
-                    location: doc.get('location')
-                });
-            });
-
-            console.log('[onClickSearch] searchList:', searchList);
-            this.setState({ searchList });
-        });
-    }
-
-
-
-    FeedCallBack = () => {
-        <View style={{ flex: 1 }}>
-
-
-            <Header searchBar rounded style={Style.searchBar}>
-                <Item>
-                    <Icon name="ios-search" />
-                    <Input placeholder="Search" onChangeText={value => this.setState({ searchText: value })} />
-                    <Button rounded onPress={this.onClickSearch}>
-                        <Text>Search</Text>
-                    </Button>
-                </Item>
-
-
-            </Header>
-
-
-
-            <Container>
-
-                <Text style={{ textAlign: "center", height: 40, fontWeight: "bold", marginTop: 10, fontSize: 23, fontFamily: "CerealMedium", elevation: 10 }}>List of Available Job</Text>
-
-                <Modal
-                    animationType={"slide"}
-                    transparent={false}
-                    visible={this.state.isVisible}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has now been closed.');
-                    }}>
-
-                    <Thumbnail
-                        source={{ uri: this.state.profileImage }}
-                        style={Style.image} />
-
-
-                    <Item fixedLabel last>
-                        <Label> Describe Yourself</Label>
-                        <Textarea onChangeText={this.setSelfDescription} rowSpan={3} bordered style={Style.startTextBtn} placeholder="Tell something about the job Here" />
-
-
-                    </Item>
-
-                    <Item fixedLabel last>
-                        <Label>Related Skills</Label>
-                        <Input onChangeText={this.setSkills} />
-                    </Item>
-
-                    <Item fixedLabel last>
-                        <Label>Related Experience</Label>
-                        <Input onChangeText={this.setExperience} />
-                    </Item>
-
-
-                    <Text
-                        style={Style.closeText}
-                        onPress={() => {
-                            this.displayModal(!this.state.isVisible);
-                        }}><Icon name="md-close" size={50} />
-                    </Text>
-
-                    <Button success style={Style.addButton} onPress={() => this.sendApplication(this.state.key)}>
-                        <Text>Submit</Text>
-                    </Button>
-                </Modal>
-
-                <View style={{ flex: 1, padding: 10, marginBottom: 10 }}>
-                    <FlatList
-                        data={this.state.jobs}
-                        //contentContainerStyle={{ flexGrow: 1 }}
-                        renderItem={({ item, index }) => {
-                            return (
-
-                                <Card key={index} style={Style.listing}>
-                                    <CardItem><Text style={Style.text_title}>{item.worktype}</Text></CardItem>
-                                    <CardItem cardBody bordered button onPress={() => this.props.navigation.navigate('FeedDetail', {
-                                        userkey: item.key
-                                    })}>
-                                        <Image source={{ uri: item.url }} style={{ height: 200, width: null, flex: 1 }} />
-                                    </CardItem>
-                                    <CardItem style={{ flexDirection: 'row' }}>
-                                        <Body>
-                                            <Text style={Style.text_header}>{item.jobname}</Text>
-                                            <CardItem button bordered onPress={() => this.props.navigation.navigate('UserProfile')}>
-                                                <Text note style={Style.jobCreator}>{item.jobCreatorName}</Text>
-                                            </CardItem>
-                                        </Body>
-                                        <Button style={Style.startRouteBtn} onPress={this.onShare}>
-                                            <Text style={{ color: 'white', fontWeight: 'bold' }}>Share</Text>
-                                        </Button>
-                                    </CardItem>
-                                    <CardItem style={Style.jobDesc}>
-                                        <Body>
-                                            <Text>{item.jobdesc}</Text>
-                                        </Body>
-                                    </CardItem>
-                                    <CardItem >
-                                        <Text style={Style.text_price}>RM  {item.salary}/job</Text>
-                                    </CardItem>
-                                    <CardItem style={{ justifyContent: 'center' }}>
-
-                                        <Button rounded primary onPress={() => { this.setState({ key: item.key }), this.displayModal(true) }}>
-                                            <Text style={{ fontWeight: 'bold', fontFamily: "CerealMedium" }}>Apply Now</Text>
-                                        </Button>
-                                    </CardItem>
-                                </Card>
-
-                            )
-                        }}
-                    />
-                </View>
-
-            </Container>
-            <Fab style={{ backgroundColor: '#f8f8fa', borderColor: '#000000' }} onPress={() => this.props.navigation.navigate('CarouselMap')}>
-
-                <Icon android name="md-compass" style={{ color: '#000000' }} />
-            </Fab>
-        </View>
-    }
 
     render() {
 
         return (
-            <>{!!this.state.searchList && this.state.searchList.length > 0 ?
-                (
-
-                    <View style={{ flex: 1, padding: 10, marginBottom: 10, backgroundColor: '#242836' }}>
-                        <Header style={{ backgroundColor: 'white', padding: 5 }}>
-                            {/* <View style={{ marginTop: 13, marginEnd: 350 }}> */}
-                            <Left>
-                                {/*                                 <Icon style={{ color: 'black' }} size={30} name="md-arrow-back" /> */}<Button onPress={() => { this.setState({ key: this.state.key }), this.FeedCallBack }}><Text>Back to Feed</Text></Button>
-                            </Left>
-                            {/* </View> */}
-                        </Header>
-                        <FlatList
-                            data={this.state.searchList}
-                            //contentContainerStyle={{ flexGrow: 1 }}
-                            renderItem={({ item, index }) => {
-                                console.log('item', item);
-                                return (
-
-                                    <Card key={index} >
-                                        <CardItem><Text style={Style.text_title}>{item.worktype}</Text></CardItem>
-                                        <CardItem cardBody bordered button onPress={() => this.props.navigation.navigate('FeedDetail', {
-                                            userkey: item.key
-                                        })}>
-                                            <Image source={{ uri: item.url }} style={{ height: 200, width: null, flex: 1 }} />
-                                        </CardItem>
-                                        <CardItem>
-                                            <Body>
-                                                <Text style={Style.text_header}>{item.jobname}</Text>
-                                                <CardItem style={{ width: 340, height: 50, borderTopWidth: 3, marginTop: 5, backgroundColor: '#DCDCDD' }} button bordered onPress={() => this.props.navigation.navigate('UserProfile')}>
-                                                    <Text note style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{item.jobCreatorName}</Text>
-                                                </CardItem>
-                                            </Body>
-                                            <Button style={Style.startRouteBtn} onPress={this.onShare}>
-                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Share</Text>
-                                            </Button>
-                                        </CardItem>
-                                        <CardItem>
-                                            <Text>RM  {item.salary}/job</Text>
-                                        </CardItem>
-                                        <CardItem style={{ justifyContent: 'center' }}>
-
-                                            <Button rounded primary onPress={() => { this.setState({ key: item.key }), this.displayModal(true) }}>
-                                                <Text>Apply Now</Text>
-                                            </Button>
-                                        </CardItem>
-                                    </Card>
-                                )
-                            }}
-                        />
-
-                    </View>
-
-                )
-                : (
 
                     <View style={{ flex: 1, }}>
-
-
-                        <Header searchBar rounded style={Style.searchBar}>
-                            <Item>
-                                <Icon name="ios-search" />
-                                <Input placeholder="Search" onChangeText={value => this.setState({ searchText: value })} />
-                                <Button rounded onPress={this.onClickSearch}>
-                                    <Text>Search</Text>
-                                </Button>
-                            </Item>
-
-
-                        </Header>
-
-
 
                         <Container>
 
@@ -514,11 +284,6 @@ export default class Feed extends Component {
                                 <Item style={Style.inputGroup} fixedLabel last>
                                     <Label>Related Skills</Label>
                                     <Input style={Style.inputText} onChangeText={this.setSkills} />
-                                </Item>
-
-                                <Item style={Style.inputGroup} fixedLabel last>
-                                    <Label>Related Experience</Label>
-                                    <Input style={Style.inputText} onChangeText={this.setExperience} />
                                 </Item>
 
 
@@ -553,19 +318,31 @@ export default class Feed extends Component {
                                                 <CardItem style={{ flexDirection: 'row' }}>
                                                     <Body>
                                                         <Text style={Style.text_header}>{item.jobname}</Text>
-                                                        <CardItem style={{ width: 340, height: 50, borderTopWidth: 3, marginTop: 5, backgroundColor: '#DCDCDD' }} button bordered onPress={() => this.props.navigation.navigate('UserProfile')}>
-                                                            <Text note style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{item.jobCreatorName}</Text>
-                                                        </CardItem>
                                                     </Body>
                                                     <Button style={Style.startRouteBtn} onPress={this.onShare}>
                                                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Share</Text>
                                                     </Button>
                                                 </CardItem>
-                                                <CardItem style={Style.jobDesc}>
-                                                    <Body>
-                                                        <Text>{item.jobdesc}</Text>
-                                                    </Body>
+
+                                                <CardItem>
+                                                    <Text style={{color:'#0D79F2'}}>{item.jobCreatorname}</Text>
                                                 </CardItem>
+                                                <CardItem style={Style.jobDesc}>
+                                                    <Text style={{fontWeight: 'bold', fontSize:13}}>Experience Required:</Text>
+                                                   
+                                                </CardItem>
+                                                <View>
+                                            
+                                                        <Text>{item.experience}</Text>
+                                                    
+                                                </View>
+                                                <CardItem style={Style.jobDesc}>
+                                                    <Text style={{fontWeight: 'bold', fontSize:13}}>Qualification Required:</Text>
+                                                   
+                                                </CardItem>
+                                                <View>
+                                                    <Text>{item.qualification}</Text>
+                                                </View>
                                                 <CardItem >
                                                     <Text style={Style.text_price}>RM  {item.salary}/job</Text>
                                                 </CardItem>
@@ -583,12 +360,9 @@ export default class Feed extends Component {
                             </View>
 
                         </Container>
-                        <Fab style={{ backgroundColor: '#f8f8fa', borderColor: '#000000' }} onPress={() => this.props.navigation.navigate('Search')}>
-
-                            <Icon android name="md-compass" style={{ color: '#000000' }} />
-                        </Fab>
+                        
                     </View>
-                )}</>
+              
         );
 
     }
@@ -864,7 +638,7 @@ const Style = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
         fontFamily: "CerealMedium",
-        backgroundColor: '#00FB83',
+        backgroundColor: '#000000',
         color: 'black',
         opacity: 1.0
     },

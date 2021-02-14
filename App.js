@@ -18,7 +18,11 @@ import Search from './job_seeker/screens/Search';
 import Home from './job_seeker/Home'
 import FeedDetail from './job_seeker/screens/FeedDetail';
 import TestAuth from './job_seeker/Auth/test';
-
+import SubmittedHiring from './job_seeker/screens/SubmittedHiring';
+import SuccessHiring from './job_seeker/screens/SuccessHiring';
+import HiringStatus from './job_seeker/screens/HiringStatus';
+import SuccessHiringDetails from './job_seeker/screens/SuccessHiringDetails';
+import MyHiringDetail from './job_seeker/screens/MyHiringDetail';
 
 function App() {
 
@@ -32,6 +36,11 @@ function App() {
         <Stack.Screen name="TestAuth" component={TestAuth}/>
         <Stack.Screen name="Login" component={Login}/>
         <Stack.Screen name="Profile" component={Profile}/>
+        <Stack.Screen name="MyHiringDetail" component={MyHiringDetail}/>
+        <Stack.Screen name="HiringStatus" component={HiringStatus}/>
+        <Stack.Screen name="SuccessHiring" component={SuccessHiring}/>
+        <Stack.Screen name="SubmittedHiring" component={SubmittedHiring}/>
+        <Stack.Screen name="SuccessHiringDetails" component={SuccessHiringDetails}/>
         <Stack.Screen name="EditProfileJobSeeker" component={EditProfileJobSeeker}/>
         <Stack.Screen name="JobSeekerDetail" component={JobSeekerDetail}/>
         <Stack.Screen name="FeedDetail" component={FeedDetail}/>

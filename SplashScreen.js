@@ -21,7 +21,7 @@ const SplashScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <StatusBar backgroundColor='#009387' barStyle="light-content" />
+            <StatusBar backgroundColor='#0D79F2' barStyle="light-content" />
             <View style={styles.header}>
                 <Animatable.Image
                     animation="bounceIn"
@@ -33,7 +33,7 @@ const SplashScreen = ({ navigation }) => {
                 <Animatable.Text
                     animation="fadeIn"
                     style={styles.Maintext}>
-                    TempJob for Job Seekers
+                    Job Portal
                 </Animatable.Text>
 
             </View>
@@ -41,7 +41,7 @@ const SplashScreen = ({ navigation }) => {
                 style={styles.footer}
                 animation="fadeInUpBig"
             >
-                <Text style={styles.title}>Find Temporary Job Here</Text>
+                <Text style={styles.title}>Find Job Here</Text>
                 <Text style={styles.text}>Sign in with account</Text>
                 <View style={styles.button}>
                     <TouchableOpacity onPress={() => navigation.push('Login')}>

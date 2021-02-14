@@ -34,7 +34,7 @@ export default function Home() {
               );
             } else if (route.name === 'Profile'){
               <Ionicons
-                  name={'md-person-circle-outline'}
+                  name={'md-person'}
                   size={size}
                   color={color}
                 />

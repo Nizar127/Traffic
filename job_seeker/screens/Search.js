@@ -131,7 +131,7 @@ export default class Search extends Component {
         console.log('state.searchText', this.state.searchText);
 
 
-        firestore.collection('Users').where('mainskills', '==', this.state.searchText).get().then(querySnapshot => {
+        firestore.collection('Job_list').where('worktype', '==', this.state.searchText).get().then(querySnapshot => {
             var searchList = [];
             var text = this.state.searchText;
             var lowercase = text.toLowerCase();
@@ -139,18 +139,14 @@ export default class Search extends Component {
             querySnapshot.forEach(doc => {
                 searchList.push({
                     key: doc.id,
-                    displayName: doc.get('displayName'),
-                    mainskills: doc.get('mainskills'),
-                    photoURL: doc.get('photoURL'),
-                    description: doc.get('description'),
-                    // jobname: doc.get('jobname'),
-                    // salary: doc.get('salary'),
-                    // url: doc.get('url'),
-                    // jobdesc: doc.get('jobdesc'),
-                    // jobCreatorName: doc.get('jobCreatorName'),
-                    // chosenDate: doc.get('chosenDate'),
-                    // worktype: doc.get('worktype'),
-                    // location: doc.get('location')
+                    jobname: doc.get('jobname'),
+                    qualification: doc.get('qualification'),
+                    photoURL: doc.get('url'),
+                    description: doc.get('jobdesc'),
+                    experience: doc.get('experience'),
+                    jobCreatorName: doc.get('jobCreatorName'),
+                    salary: doc.get('salary')
+
                 });
             });
 
@@ -179,36 +175,69 @@ export default class Search extends Component {
                             renderItem={({ item, index }) => {
                                 console.log('item', item);
                                 return (
-
-                                    <Card key={index} >
-                                        <CardItem><Text style={Style.text_title}>{item.mainskills}</Text></CardItem>
-                                        <CardItem cardBody bordered button onPress={() => this.props.navigation.navigate('FeedDetail', {
-                                            userkey: item.key
-                                        })}>
-                                            <Image source={{ uri: item.photoURL }} style={{ height: 200, width: null, flex: 1 }} />
-                                        </CardItem>
-                                        <CardItem>
-                                            <Body>
-                                                <CardItem style={{ width: 340, height: 50, borderTopWidth: 3, marginTop: 5, }} button bordered onPress={() => this.props.navigation.navigate('UserProfile')}>
-                                                    <Text note style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{item.displayName}</Text>
+                                 <View>
+                                    <Header searchBar rounded style={Style.searchBar}>
+                                    <Item>
+                                        <Icon name="ios-search" />
+                                        <Input placeholder="Search" onChangeText={value => this.setState({ searchText: value })} />
+                                        <Button rounded onPress={this.onClickSearch}>
+                                            <Text>Search</Text>
+                                        </Button>
+                                    </Item>
+        
+        
+                                </Header>
+                                
+                                <Card key={index} style={Style.listing}>
+                                                <CardItem><Text style={Style.text_title}>{item.worktype}</Text></CardItem>
+                                                <CardItem cardBody bordered button onPress={() => this.props.navigation.navigate('FeedDetail', {
+                                                    userkey: item.key
+                                                })}>
+                                                    <Image source={{ uri: item.url }} style={{ height: 200, width: null, flex: 1 }} />
+                                                </CardItem>
+                                                <CardItem style={{ flexDirection: 'row' }}>
+                                                    <Body>
+                                                        <Text style={Style.text_header}>{item.jobname}</Text>
+                                                    </Body>
+                                                    <Button style={Style.startRouteBtn} onPress={this.onShare}>
+                                                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Share</Text>
+                                                    </Button>
                                                 </CardItem>
 
-                                            </Body>
-                                            <Button style={Style.startRouteBtn} onPress={this.onShare}>
-                                                <Text style={{ color: 'white', fontWeight: 'bold' }}>Share</Text>
-                                            </Button>
-                                        </CardItem>
-                                        <CardItem style={{ width: 340, height: 50, marginTop: 5, marginBottom: 7, backgroundColor: 'white' }} button bordered onPress={() => this.props.navigation.navigate('UserProfile')}>
-                                            <Text note style={{ fontSize: 18, color: 'black', fontWeight: 'bold' }}>{item.description}</Text>
-                                        </CardItem>
+                                                <CardItem>
+                                                    <Text style={{color:'#0D79F2'}}>{item.jobCreatorname}</Text>
+                                                </CardItem>
+                                                <CardItem style={Style.jobDesc}>
+                                                    <Text style={{fontWeight: 'bold', fontSize:13}}>Experience Required:</Text>
+                                                   
+                                                </CardItem>
+                                                <View>
+                                            
+                                                        <Text>{item.experience}</Text>
+                                                    
+                                                </View>
+                                                <CardItem style={Style.jobDesc}>
+                                                    <Text style={{fontWeight: 'bold', fontSize:13}}>Qualification Required:</Text>
+                                                   
+                                                </CardItem>
+                                                <View>
+                                                    <Text>{item.qualification}</Text>
+                                                </View>
+                                                <CardItem >
+                                                    <Text style={Style.text_price}>RM  {item.salary}/job</Text>
+                                                </CardItem>
+                                                <CardItem style={{ justifyContent: 'center' }}>
 
-                                        <CardItem style={{ justifyContent: 'center' }}>
+                                                    <Button rounded primary onPress={() => { this.setState({ key: item.key }), this.displayModal(true) }}>
+                                                        <Text style={{ fontWeight: 'bold', fontFamily: "CerealMedium" }}>Apply Now</Text>
+                                                    </Button>
+                                                </CardItem>
+                                            </Card>
 
-                                            <Button rounded primary onPress={() => { this.setState({ key: item.key }) }}>
-                                                <Text>Hire</Text>
-                                            </Button>
-                                        </CardItem>
-                                    </Card>
+
+
+                                   
+                                    </View>
                                 )
                             }}
                         />

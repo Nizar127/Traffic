@@ -41,13 +41,6 @@ const dataArray = [
 
 
 
-const options = [
-    'Cancel',
-    <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold', fontFamily: 'montserrat' }}>Part-Time</Text>,
-    <Text style={{ color: 'blue', fontSize: 20, fontWeight: 'bold', fontFamily: 'montserrat' }}>Contract</Text>,
-    <Text style={{ color: 'green', fontSize: 20, fontWeight: 'bold', fontFamily: 'montserrat' }}>Freelances</Text>,
-
-]
 export default class UserProfile extends Component {
 
 
@@ -59,20 +52,8 @@ export default class UserProfile extends Component {
         //   this.ActionSheet.show()
         // }
 
-        // handlePress = (buttonIndex) => {
-        //   this.setState({ selected: buttonIndex })
-        // }
     }
 
-    showActionSheet = () => {
-        this.ActionSheet.show()
-    }
-    // displayModal(show) {
-    //     this.setState({ isVisible: show })
-    // }
-    // displayData(show){
-    //     this.setState({expanded: show})
-    // }
 
     setExpanded(show) {
         this.setState({ expanded: show })
@@ -112,17 +93,7 @@ export default class UserProfile extends Component {
                             <Text note><Icon name="md-pin" style={{ color: 'red' }} size={30} /> Kuala Terengganu, Malaysia</Text>
                         </CardItem>
                         <View style={{ margin: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Button success style={{ borderRadius: 40, marginRight: 10, elevation: 12 }} onPress={this.showActionSheet}>
-                                <ActionSheet
-                                    ref={o => this.ActionSheet = o}
-                                    title={<Text style={{ color: '#000', fontSize: 18 }}>Which one do you like?</Text>}
-                                    options={options}
-                                    cancelButtonIndex={0}
-                                    destructiveButtonIndex={6}
-                                    onPress={(index) => { /* do something */ }}
-                                />
-                                <Text style={{ fontWeight: "bold", fontSize: 17, padding: 10 }}>Request</Text>
-                            </Button>
+
                             <Button info style={{ borderRadius: 40, marginLeft: 10, elevation: 12 }}>
                                 <Text style={{ fontWeight: "bold", fontSize: 17, padding: 10 }}>Follow</Text>
                             </Button>

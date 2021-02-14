@@ -30,7 +30,7 @@ import {auth, db, storage, firestore} from '../../config/Firebase';
 export default class FeedDetail extends Component {
     constructor() {
         super();
-        this.hireRef = firestore().collection('Hiring');
+        this.hireRef = firestore.collection('Hiring');
 
         this.state = {
             jobs: [],
@@ -41,8 +41,7 @@ export default class FeedDetail extends Component {
             peoplenum: null,
             time: null,
             worktype: null,
-            chosenDate: null,
-            location: { description: '' },
+            qualification: null,
             url: null,
             key: '',
             dynamicAddress: [],
@@ -59,7 +58,7 @@ export default class FeedDetail extends Component {
 
 
     componentDidMount() {
-        const FeedDetailRef = firestore.collection('Job_list').doc(this.props.navigation.state.params.userkey);
+        const FeedDetailRef = firestore.collection('Job_list').doc(this.props.route.params.userkey);
         FeedDetailRef.get().then((res) => {
             if (res.exists) {
                 const apply = res.data();
@@ -70,12 +69,12 @@ export default class FeedDetail extends Component {
                     jobdesc: apply.jobdesc,
                     salary: apply.salary,
                     peoplenum: apply.peoplenum,
-                    chosenDate: apply.chosenDate,
                     worktype: apply.worktype,
-                    location: apply.location,
                     url: apply.url,
-                    lat: apply.lat,
-                    lng: apply.lng
+                    experience: apply.experience,
+                    qualification: apply.qualification,
+                    uniqueId: apply.uniqueId,
+
                 });
                 console.log("state", this.state)
 
@@ -91,10 +90,6 @@ export default class FeedDetail extends Component {
         this.setState({ isVisible: show })
     }
 
-
-    setExperience = (value) => {
-        this.setState({ ...this.state, experience: value })
-    }
 
     setSkills = (value) => {
         this.setState({ ...this.state, skills: value })
@@ -119,11 +114,9 @@ export default class FeedDetail extends Component {
                 job_seekerImage: doc.get('url'),
                 jobname: doc.get('jobname'),
                 jobWorkType: doc.get('worktype'),
-                workingLocation: doc.get('location'),
-                lat: doc.get('lat'),
-                lng: doc.get('lng'),
+                workExperience: doc.get('experience'),
                 job_seeker_salary: doc.get('salary'),
-                startDate: doc.get('chosenDate')
+                job_qualification: doc.get('qualification')
             }, () => {
 
                 console.log("state", this.state)
@@ -131,7 +124,7 @@ export default class FeedDetail extends Component {
 
 
 
-                if (this.state.experience && this.state.skills && this.state.selfdescription) {
+                if (this.state.skills && this.state.selfdescription) {
 
                     this.hireRef.add({
                         userID: auth.currentUser.uid,
@@ -142,20 +135,16 @@ export default class FeedDetail extends Component {
                         job_seekerImage: this.state.job_seekerImage,
                         jobName: this.state.jobname,
                         job_seekerSalary: this.state.job_seeker_salary,
-                        jobWorkType: this.state.jobWorkType,
-                        workingLocation: this.state.workingLocation.description,
-                        lat: this.state.lat,
-                        lng: this.state.lng,
-                        startDate: this.state.startDate,
+                        jobWorkType: this.state.jobWorkType,                
+                        job_qualification: this.state.job_qualification,
+                        jobExperience: this.state.workExperience,
                         ref_skills: this.state.skills,
-                        ref_experienece: this.state.experience,
                         ref_selfDescribe: this.state.selfdescription
 
 
                     }).then((res) => {
                         this.setState({
                             skills: '',
-                            experience: '',
                             selfdescription: '',
                         });
                         Alert.alert('Congrats!', 'Your Application Has Been Send To The Job Creator');
@@ -204,12 +193,6 @@ export default class FeedDetail extends Component {
                         <Input onChangeText={this.setSkills} />
                     </Item>
 
-                    <Item fixedLabel last>
-                        <Label>Related Experience</Label>
-                        <Input onChangeText={this.setExperience} />
-                    </Item>
-
-
                     <Text
                         style={styles.closeText}
                         onPress={() => {
@@ -223,19 +206,32 @@ export default class FeedDetail extends Component {
                 </Modal>
 
                 <Content padder>
-
-                    <Image source={{ uri: this.state.url }} style={{ resizeMode: 'cover', height: 300 }} />
-
                     <Card>
-                        <CardItem bordered header>
+                       <CardItem bordered header>
                             <Text style={{ textAlign: "center", height: 40, fontWeight: "bold", marginTop: 20 }} >{this.state.jobname}</Text>
 
                         </CardItem>
-                        <CardItem bordered>
+                    </Card>
+                    <Card style={{ height: 300 }}>
+                        <Image source={{ uri: this.state.url }} style={{ height: 300 }} />
+                    </Card>
 
-                            <Text style={{ height: 30, fontWeight: "bold", marginTop: 20, marginBottom: 20 }}>{this.state.uniqueId}</Text>
+                    <Card>
+                        <CardItem bordered header>
+                            <Text style={{ textAlign: "center", height: 40, fontWeight: "bold", marginTop: 20 }} >Employer Email</Text>
 
                         </CardItem>
+                        <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>{this.state.jobCreatorName}</Text>
+                            </Body>
+                        <CardItem bordered>
+
+                            <Text style={{ height: 30, fontWeight: "bold", marginTop: 20, marginBottom: 20 }}>Unique Id</Text>
+
+                        </CardItem>
+                        <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>{this.state.uniqueId}</Text>
+                            </Body>
                     </Card>
 
                     <Card>
@@ -250,24 +246,44 @@ export default class FeedDetail extends Component {
                             </Body>
                         </CardItem>
                     </Card>
-                    {/* <CardItem>   
-                         <Text style={{marginTop: 5, marginBottom: 5}}>Creative World Industries</Text>
-                    </CardItem> */}
 
 
-
-                    <Card style={{ height: 200 }}>
+                    <Card style={{ height: 400 }}>
                         <CardItem header bordered>
                             <Text style={{ fontWeight: "bold" }}>Requirement</Text>
                         </CardItem>
                         <CardItem cardBody>
                             <Body>
-                                <Text style={{ marginLeft: 30, marginTop: 25 }}>{this.state.worktype}</Text>
+                                <ListItem>
+                                    <Text style={{ marginLeft: 30, marginTop: 25 }}>{this.state.worktype}</Text>
+                                </ListItem>
                             </Body>
                         </CardItem>
-                        <CardItem cardBody style={{ marginTop: 20 }}>
+                        <CardItem cardBody>
                             <Body>
-                                <Text>Number of People Required: {this.state.peoplenum}</Text>
+                                <ListItem>
+                                  <Text style={{ marginLeft: 30, marginTop: 25 }}>{this.state.qualification}</Text>
+                                </ListItem>
+                            </Body>
+                        </CardItem>
+                        <CardItem cardBody>
+                            <Body>
+                                <ListItem>
+                                    <Text style={{ marginLeft: 30, marginTop: 25 }}>{this.state.experience}</Text>
+                                </ListItem>
+                            </Body>
+                        </CardItem>
+                     </Card>
+                     <Card>
+                        <CardItem bordered header>
+
+                            <Text style={{ justifyContent: "center", fontWeight: "bold" }}>Number of People Required:</Text>
+
+                         </CardItem>
+                        <CardItem cardBody style={{ marginTop: 20 }}>
+                            
+                            <Body>
+                                <Text> {this.state.peoplenum}</Text>
                             </Body>
                         </CardItem>
                     </Card>
@@ -276,28 +292,10 @@ export default class FeedDetail extends Component {
                             <Text style={{ fontWeight: "bold" }}>Salary</Text>
                         </CardItem>
                         <CardItem cardBody style={{ height: 40, marginTop: 10, marginLeft: 20 }}>
-                            <Body><Text>RM {this.state.salary}</Text></Body>
-                        </CardItem>
-                    </Card>
-                    <Card style={{ height: 200 }}>
-                        <CardItem header bordered>
-                            <Text style={{ fontWeight: "bold" }}>Date</Text>
-                        </CardItem>
-                        <CardItem cardBody>
-                            <Body>
-                                <Text>{this.state.chosenDate}</Text>
-                            </Body>
+                            <Body><Text>$ {this.state.salary}</Text></Body>
                         </CardItem>
                     </Card>
 
-                    <Card style={{ height: 400, marginBottom: 10 }}>
-                        <CardItem header bordered>
-                            <Text style={{ fontWeight: "bold" }}>LOCATION</Text>
-                        </CardItem>
-                        <CardItem header >
-                            <Text style={{ fontWeight: "bold" }}>{this.state.location.description}</Text>
-                        </CardItem>
-                    </Card>
                 </Content>
                 <Card style={styles.applyFooter}>
                     <CardItem>

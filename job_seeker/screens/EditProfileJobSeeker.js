@@ -49,7 +49,6 @@ export default class EditProfileJobSeeker extends Component {
             username: '',
             phonenumber: '',
             profileImage: '',
-            keyplayer: '',
             description: '',
             uniqueId: '',
             jobdesc: '',
@@ -199,58 +198,6 @@ export default class EditProfileJobSeeker extends Component {
     }
 
 
-    addTextInputadd = (index) => {
-        let textInput = this.state.textInputadd;
-        textInput.push(
-            <View key={index} style={{ flexDirection: 'row', margin: 5 }}>
-                <TextInput style={styles.startRouteBtn} onChangeText={(text) => this.addValuesadd(text, index)} />
-                <Icon android name="md-remove" size={30} style={{ marginTop: 30 }} onPress={() => this.removeTextInput2()} />
-            </View>
-
-        );
-        this.setState({ textInput });
-    }
-
-    //function to remove TextInput dynamically
-    removeTextInput2 = () => {
-        let textInput = this.state.textInputadd;
-        let inputData = this.state.inputDataadd;
-        textInput.pop();
-        inputData.pop();
-        this.setState({ textInput, inputData });
-    }
-
-    //function to add text from TextInputs into single array
-    addValuesadd = (text, index) => {
-        let dataArray = this.state.inputDataadd;
-        let checkBool = false;
-        if (dataArray.length !== 0) {
-            dataArray.forEach(element => {
-                if (element.index === index) {
-                    element.text = text;
-                    checkBool = true;
-                }
-            });
-        }
-        if (checkBool) {
-            this.setState({
-                inputDataadd: dataArray
-            });
-        }
-        else {
-            dataArray.push({ 'text': text, 'index': index });
-            this.setState({
-                inputDataadd: dataArray
-            });
-        }
-    }
-
-    //function to console the output
-    getValues = () => {
-        console.log('Data', this.state.inputDataadd);
-    }
-
-
     inputValueUpdate = (val, prop) => {
         const state = this.state;
         state[prop] = val;
@@ -290,21 +237,14 @@ export default class EditProfileJobSeeker extends Component {
         }
         console.log('skills', skills);
 
-        let experiences = [this.state.experience];
-        for (let index = 0; index < this.state.inputDataadd.length; index++) {
-            const element = this.state.inputDataadd[index];
-            experiences.push(element.text);
-
-        }
-        console.log('experiences', skills);
 
         const updateDBRef = firestore.collection('Users').doc(auth.currentUser.uid);
 
             updateDBRef.update({
-                username: this.state.username,
-                profileimage: this.state.profileImage,
+                fullname: this.state.username,
+                url: this.state.profileImage,
                 description: this.state.description,
-                experience: experiences,
+                phoneNum: this.state.phonenumber,
                 skills: skills,
                 url: this.state.url
             }).then((docRef) => {
@@ -318,9 +258,7 @@ export default class EditProfileJobSeeker extends Component {
     render() {
         return (
 
-            // this.props.users.map((item, index) => {
-
-            <View style={{ flex: 1 }} /* key={index} */  >
+            <View style={{ flex: 1 }} >
                 <Header style={{ backgroundColor: 'white' }}>
                     <View style={{ marginTop: 13, marginEnd: 350 }}>
                         <Icon style={{ color: 'black' }} size={30} name="md-arrow-back" onPress={() => this.props.navigation.goBack()} />
@@ -403,30 +341,6 @@ export default class EditProfileJobSeeker extends Component {
                                         style={styles.startRouteBtn}
                                         onChangeText={(val) => this.inputValueUpdate(val, 'skill')}
                                     />
-                                    <Icon android name="md-add" size={30} onPress={() => this.addTextInputadd(this.state.textInputadd.length)} />
-                                    {this.state.textInputadd.map((value) => {
-                                        return value
-                                    })}
-
-                                </View>
-
-                            </Content>
-                        </CardItem>
-                      </Card>
-                      <Card style={{ height: auto }}>
-                        <CardItem header bordered>
-
-                            <Text style={styles.MainText}>Experience</Text>
-                        </CardItem>
-                        <CardItem cardBody>
-                            <Content>
-                                <View style={styles.inputGroup}>
-                                    <TextInput
-                                        placeholder={'Experience'}
-                                        value={this.state.project}
-                                        style={styles.startRouteBtn}
-                                        onChangeText={(val) => this.inputValueUpdate(val, 'experience')}
-                                    />
                                     <Icon android name="md-add" size={30} onPress={() => this.addTextInput(this.state.textInput.length)} />
                                     {this.state.textInput.map((value) => {
                                         return value
@@ -448,7 +362,7 @@ export default class EditProfileJobSeeker extends Component {
             </View>
 
 
-            //})
+        
         )
     }
 }
