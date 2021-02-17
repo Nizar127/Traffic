@@ -43,8 +43,9 @@ export default class Profile extends Component {
             experience: [],
             username: '',
             fullname: '',
+            description: '',
             key: '',
-            phonenumber: '',
+            phoneNum: '',
             profileImage: '',
             keyplayer: '',
             uniqueId: '',
@@ -70,7 +71,7 @@ export default class Profile extends Component {
     componentDidMount() {
         this.unsubscribe = firestore.collection('Users').doc(auth.currentUser.uid).onSnapshot(doc => {
             console.log(doc);
-            const { fullname, phoneNum, url, description, skills, } = doc.data();
+            const { fullname, phoneNum, url, description, skills} = doc.data();
             this.setState({
                 fullname,
                 description,
@@ -165,8 +166,13 @@ export default class Profile extends Component {
                     </Card>
 
                    <Card style={{ height: 100 }}>
-                        <CardItem cardBody bordered button onPress={() => this.props.navigation.navigate('MyApplication')}>
-                            <Text style={{ justifyContent: 'center', fontSize: 17 }}>Click Here to View Your Submitted Application</Text>
+                        <CardItem cardBody bordered button onPress={() => this.props.navigation.navigate('SubmittedHiring')}>
+                            <Text style={{ justifyContent: 'center', fontSize: 17,fontFamily: "CerealMedium"}}>Click Here to View Your Submitted Application</Text>
+                        </CardItem>
+                    </Card> 
+                    <Card style={{ height: 100 }}>
+                        <CardItem cardBody bordered button onPress={() => this.props.navigation.navigate('SuccessHiring')}>
+                            <Text style={{ justifyContent: 'center', fontSize: 17,fontFamily: "CerealMedium"}}>Click Here to View Your Successful Application</Text>
                         </CardItem>
                     </Card> 
 
@@ -201,7 +207,7 @@ export default class Profile extends Component {
 
                             <Text>Skills</Text>
                         </CardItem>
-                        <CardItem cardBody>
+                         <CardItem cardBody>
                             <Content>
                                 {
                                      this.state.skills &&                      
@@ -215,7 +221,7 @@ export default class Profile extends Component {
                                 }
 
                             </Content>
-                        </CardItem>
+                        </CardItem> 
                     </Card>
                      
 

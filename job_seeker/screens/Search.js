@@ -17,10 +17,7 @@ export default class Search extends Component {
     constructor() {
         super();
 
-        //this.hireRef = firestore().collection('Hiring');
-        this.userRef = firestore.collection('users');
-        //this.applyRef = firestore().collection('Job_list').orderBy('chosenDate', 'asc');
-
+      
 
         this.state = {
             show: true,
@@ -45,7 +42,7 @@ export default class Search extends Component {
             url: '',
             job_seeker_name: '',
             jobCreatorID: '',
-            jobCreatorName: '',
+            jobCreatoname: '',
             jobDescription: '',
             job_seekerImage: '',
             jobWorkType: '',
@@ -141,10 +138,10 @@ export default class Search extends Component {
                     key: doc.id,
                     jobname: doc.get('jobname'),
                     qualification: doc.get('qualification'),
-                    photoURL: doc.get('url'),
+                    url: doc.get('url'),
                     description: doc.get('jobdesc'),
                     experience: doc.get('experience'),
-                    jobCreatorName: doc.get('jobCreatorName'),
+                    jobCreatorname: doc.get('jobCreatorname'),
                     salary: doc.get('salary')
 
                 });

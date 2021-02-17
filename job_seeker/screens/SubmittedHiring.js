@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import { removeStudent } from '../services/DataService';
 import { StyleSheet, Alert, FlatList, View, ActivityIndicator } from 'react-native';
 import { Container, Content, Footer, FooterTab, Button, Icon, Text, List, ListItem, Left, Right, Header, Body } from 'native-base';
-import {auth, firestore, storage,db} from '../config/Firebase';
+import {auth, firestore, storage,db} from '../../config/Firebase';
 
 
 //let job = db.ref('/Job');
@@ -10,7 +10,7 @@ import {auth, firestore, storage,db} from '../config/Firebase';
 export default class SubmittedHiring extends Component {
     constructor() {
         super();
-        this.applicationRef = firestore.collection('Hiring').where('uid', '==', auth.currentUser.uid);
+        this.applicationRef = firestore.collection('Hiring').where('userID', '==', auth.currentUser.uid);
         this.state = {
             isLoading: true,
             jobs: []
@@ -40,7 +40,7 @@ export default class SubmittedHiring extends Component {
     getCollection = (querySnapshot) => {
         const jobs = [];
         querySnapshot.forEach((res) => {
-            const { jobName, jobExperience, jobDescription,jobWorkType, job_qualification, job_seekerImage, job_seekerSalary, job_seeker_name, userID, ref_selfDescribe, ref_skills, jobCreatorName} = res.data();
+            const { jobName,jobCreatorID, jobExperience, jobDescription,jobWorkType, job_qualification, job_seekerImage, job_seekerSalary, job_seeker_name, userID, ref_selfDescribe, ref_skills, jobCreatorName} = res.data();
             jobs.push({
                 key: res.id,
                 res,
@@ -48,6 +48,8 @@ export default class SubmittedHiring extends Component {
                 jobExperience,
                 jobDescription,
                 jobWorkType,
+                jobCreatorName,
+                jobCreatorID,
                 job_qualification,
                 job_seekerImage,
                 job_seekerSalary,
@@ -100,6 +102,9 @@ export default class SubmittedHiring extends Component {
                                     <Left>
                                         <Text>{item.jobName}</Text>
                                     </Left>
+                                    <Body>
+                                        <Text>{item.jobCreatorName}</Text>
+                                    </Body>
                                     <Right>
                                         <Icon name="arrow-forward" />
                                     </Right>

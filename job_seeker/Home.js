@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Feed from './screens/Feed';
 import Profile from './screens/Profile';
 import Search from './screens/Search';
+import SuccessHiring from './screens/SuccessHiring';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -32,7 +33,16 @@ export default function Home() {
                   color={color}
                 />
               );
-            } else if (route.name === 'Profile'){
+            } else if (route.name === 'SuccessHiring') {
+              return (
+                <Ionicons
+                  name={'md-briefcase-outline'}
+                  size={size}
+                  color={color}
+                />
+              );
+            } 
+            else if (route.name === 'Profile'){
               <Ionicons
                   name={'md-person'}
                   size={size}
@@ -48,6 +58,7 @@ export default function Home() {
         >
           <Tab.Screen name="Feed" component={Feed} />
           <Tab.Screen name="Search" component={Search} />
+          <Tab.Screen name="SuccessHiring" component={SuccessHiring} />
           <Tab.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
 

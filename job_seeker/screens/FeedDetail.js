@@ -101,6 +101,21 @@ export default class FeedDetail extends Component {
 
 
     sendApplication = (id) => {
+
+        let userRef = firestore.doc('Users/${uid}').get();
+        userRef.then((user) => {
+            this.setState({
+                ...this.state, 
+                userid: user.get('uid'),
+                jobSeekerImage: user.get('url'),
+                jobSeekerFullname: user.get('fullname'),
+                jobSeekerPhoneNumber: user.get('phoneNum'),
+                jobSeekerDescription: user.get('description')
+
+            })
+
+        })
+
         let dbref = firestore.collection('Job_list').doc(id).get();
         dbref.then(doc => {
             this.setState({
@@ -109,8 +124,9 @@ export default class FeedDetail extends Component {
                 //job_seeker_name: doc.get('username'),
                 job_id: doc.get('id'),
                 jobCreatorID: doc.get('uid'),
-                jobCreatorName: doc.get('jobCreatorName'),
+                jobCreatorName: doc.get('jobCreatorname'),
                 jobDescription: doc.get('jobdesc'),
+                jobImage: doc.get('url'),
                 job_seekerImage: doc.get('url'),
                 jobname: doc.get('jobname'),
                 jobWorkType: doc.get('worktype'),
@@ -124,11 +140,11 @@ export default class FeedDetail extends Component {
 
 
 
-                if (this.state.skills && this.state.selfdescription) {
+                if ( this.state.skills && this.state.selfdescription) {
 
                     this.hireRef.add({
                         userID: auth.currentUser.uid,
-                        job_seeker_name: auth.currentUser.displayName,
+                        job_seeker_name: auth.currentUser.email,
                         jobCreatorID: this.state.jobCreatorID,
                         jobCreatorName: this.state.jobCreatorName,
                         jobDescription: this.state.jobDescription,
@@ -139,15 +155,29 @@ export default class FeedDetail extends Component {
                         job_qualification: this.state.job_qualification,
                         jobExperience: this.state.workExperience,
                         ref_skills: this.state.skills,
-                        ref_selfDescribe: this.state.selfdescription
-
-
+                        ref_selfDescribe: this.state.selfdescription,
+                        jobSeekerId:this.state,userId,
+                        jobSeekerImage: this.state,jobSeekerImage,
+                        jobSeekerFullname: this.state.jobSeekerFullname,
+                        jobSeekerPhoneNumber: this.state.jobSeekerPhoneNumber,
+                        jobSeekerDescription: this.state.jobSeekerDescription
                     }).then((res) => {
                         this.setState({
                             skills: '',
                             selfdescription: '',
                         });
-                        Alert.alert('Congrats!', 'Your Application Has Been Send To The Job Creator');
+                        Alert.alert('Your Job Has Been Send to Employer', 'Please Choose',
+                        [
+                            {
+                                text: "Return To Main Screen",
+                                onPress: () => this.props.navigation.navigate('Feed')
+                            },
+                            {
+                                text: "View Current Job Posted",
+                                onPress: () => this.props.navigation.navigate('HiringStatus')
+                            }
+                        ], { cancelable: false }
+                    );
                         this.displayModal(!this.state.isVisible);
                         //this.removeItem(this.state.key);
                     })

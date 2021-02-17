@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import { removeStudent } from '../services/DataService';
 import { Alert, View, Image, StyleSheet, Dimensions } from 'react-native';
 import { Container, auto, Content, Footer, FooterTab, Body, Button, Icon, Text, List, Header, Card, CardItem, ListItem } from 'native-base';
-import {auth, firestore} from '../../config/Firebase'
+import {auth, firestore, storage,db} from '../../config/Firebase'
 //import JobList from '../../components/chat/JobList';
 
 const { width, height } = Dimensions.get('window')
@@ -13,17 +13,17 @@ export default class SuccessHiringDetails extends Component {
         super(props);
         this.state = {
             jobs: [],
-            jobCreatorID,
-                job_creator_name, 
-                job_creator_Image, 
-                jobSeekerName,
-                 jobSeekerID, 
-                 jobDescription, 
-                 job_seekerImage, 
-                 jobName,
-                 job_seekerSalary, 
-                 type_of_job,
-                  task
+            jobCreatorID: null,
+                job_creator_name: null, 
+                job_creator_Image: null, 
+                jobSeekerName: null,
+                 jobSeekerID: null, 
+                 jobDescription: null, 
+                 job_seekerImage: null, 
+                 jobName: null,
+                 job_seekerSalary: null, 
+                 type_of_job: null,
+                  task: null
         }
 
     }
@@ -86,7 +86,7 @@ export default class SuccessHiringDetails extends Component {
 
                         </CardItem>
                         <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
-                                <Text>{this.state.jobCreatorName}</Text>
+                                <Text>{this.state.job_creator_name}</Text>
                             </Body>
                         <CardItem bordered>
 
@@ -94,7 +94,7 @@ export default class SuccessHiringDetails extends Component {
 
                         </CardItem>
                         <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
-                                <Text>{this.state.jobWorkType}</Text>
+                                <Text>{this.state.type_of_job}</Text>
                             </Body>
                     </Card>
 
@@ -107,6 +107,19 @@ export default class SuccessHiringDetails extends Component {
                         <CardItem bordered cardBody>
                             <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
                                 <Text>{this.state.jobDescription}</Text>
+                            </Body>
+                        </CardItem>
+                    </Card>
+
+                    <Card>
+                        <CardItem bordered header>
+
+                            <Text style={{ justifyContent: "center", fontWeight: "bold" }}>Task</Text>
+
+                        </CardItem>
+                        <CardItem bordered cardBody>
+                            <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>{this.state.task}</Text>
                             </Body>
                         </CardItem>
                     </Card>

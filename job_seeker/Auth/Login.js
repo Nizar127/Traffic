@@ -88,7 +88,7 @@ callGraph = async token => {
 async loginWithFacebook() {
 
   //ENTER YOUR APP ID 
-  const { type, token } = await Facebook.logInWithReadPermissionsAsync('714799715835689', { permissions: ['public_profile'] })
+  const { type, token } = await Facebook.logInWithReadPermissionsAsync('<your_secret_key>', { permissions: ['public_profile'] })
 
   if (type == 'success') {
 
@@ -144,18 +144,9 @@ async loginWithFacebook() {
               <Text style={{ color: 'white' }}> Sign Up</Text>
           </Button>
 
-          <Button style={{ marginTop: 10 }}
-              full
-              rounded
-              primary
-              onPress={() => this.props.navigation.navigate('Home')}
-          >
-              <Text style={{ color: 'white' }}> Skip to Dashboard</Text>
-          </Button>
 
           <Button style={{ marginTop: 10 }}
             full
-            rounded
             primary
             onPress={() => this.loginWithFacebook()}
           >

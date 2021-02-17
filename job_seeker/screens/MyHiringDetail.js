@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import { removeStudent } from '../services/DataService';
 import { Alert, View, Image, StyleSheet, Dimensions } from 'react-native';
 import { Container, auto, Content, Footer, FooterTab, Body, Button, Icon, Text, List, Header, Card, CardItem, ListItem } from 'native-base';
-import {auth, firestore} from '../../config/Firebase'
+import {auth, firestore, storage,db} from '../../config/Firebase'
 //import JobList from '../../components/chat/JobList';
 
 const { width, height } = Dimensions.get('window')
@@ -13,18 +13,18 @@ export default class MyHiringDetail extends Component {
         super(props);
         this.state = {
             jobs: [],
-            jobName:'',
-            jobExperience: '',
-            jobDescription: '',
-            jobWorkType: '',
-            job_qualification: '',
-            job_seekerImage: '',
-            job_seekerSalary: '',
-            job_seeker_name: '',
-            userID: '',
-            ref_selfDescribe: '', 
-            ref_skills: '', 
-            jobCreatorName: '',
+            jobName:null,
+            jobExperience: null,
+            jobDescription: null,
+            jobWorkType: null,
+            job_qualification: null,
+            job_seekerImage: null,
+            job_seekerSalary: null,
+            job_seeker_name: null,
+            userID: null,
+            ref_selfDescribe: null, 
+            ref_skills: null, 
+            jobCreatorName: null,
         }
 
     }
@@ -40,6 +40,7 @@ export default class MyHiringDetail extends Component {
                     jobExperience: job.jobExperience,
                     jobDescription: job.jobDescription,
                     jobWorkType: job.jobWorkType,
+                    jobCreatorID: job.jobCreatorID,
                     job_qualification: job.job_qualification,
                     job_seekerImage: job.job_seekerImage,
                     job_seekerSalary: job.job_seekerSalary,
@@ -111,6 +112,53 @@ export default class MyHiringDetail extends Component {
                             </Body>
                         </CardItem>
                     </Card>
+                    <Card>
+                        <CardItem bordered header>
+
+                            <Text style={{ justifyContent: "center", fontWeight: "bold" }}>Experience Requirement:</Text>
+
+                        </CardItem>
+                        <CardItem bordered cardBody>
+                            <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>{this.state.jobExperience}</Text>
+                            </Body>
+                        </CardItem>
+                        <CardItem bordered cardBody>
+                            <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>My Skills:</Text>
+                            </Body>
+                        </CardItem>
+                        <CardItem bordered cardBody>
+                            <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>{this.state.ref_skills}</Text>
+                            </Body>
+                        </CardItem>
+                    </Card>
+
+                    <Card>
+                        <CardItem bordered header>
+
+                            <Text style={{ justifyContent: "center", fontWeight: "bold" }}>Qualification:</Text>
+
+                        </CardItem>
+                        <CardItem bordered cardBody>
+                            <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>{this.state.job_qualification}</Text>
+                            </Body>
+                        </CardItem>
+                        <CardItem bordered cardBody>
+                            <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>How I Fit In This Job:</Text>
+                            </Body>
+                        </CardItem>
+                        <CardItem bordered cardBody>
+                            <Body style={{ flex: 1, justifyContent: 'center', height: 250, marginLeft: 20 }}>
+                                <Text>{this.state.ref_selfDescribe}</Text>
+                            </Body>
+                        </CardItem>
+                    </Card>
+
+
 
 
     

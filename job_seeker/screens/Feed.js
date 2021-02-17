@@ -30,16 +30,22 @@ export default class Feed extends Component {
             key: '',
             url: '',
             job_seeker_name: '',
+            jobImage:'',
             jobCreatorID: '',
             jobCreatorName: '',
             jobDescription: '',
             job_seekerImage: '',
+            job_seekerName:'',
             jobWorkType: '',
             job_seeker_salary: '',
             job_qualification: '',
             searchText: '',
-            searchList: []
-
+            searchList: [],
+            userid: '',
+            jobSeekerImage: '',
+            jobSeekerFullname: '',
+            jobSeekerPhoneNumber: '',
+            jobSeekerDescription: ''
         };
 
     }
@@ -48,7 +54,7 @@ export default class Feed extends Component {
         try {
             const result = await Share.share({
                 message:
-                    'This temporary job is incredible! Check out other tons more of similar job here at TempJob. Share it with your family and friends',
+                    'This temporary job is incredible! Check out other tons more of similar job here at Traffic. Share it with your family and friends',
             });
 
             if (result.action === Share.sharedAction) {
@@ -188,8 +194,6 @@ export default class Feed extends Component {
 
     sendApplication = (id) => {
 
-
-
         let dbref = firestore.collection('Job_list').doc(id).get();
         dbref.then(doc => {
             this.setState({
@@ -200,7 +204,7 @@ export default class Feed extends Component {
                 jobCreatorID: doc.get('uid'),
                 jobCreatorName: doc.get('jobCreatorname'),
                 jobDescription: doc.get('jobdesc'),
-                job_seekerImage: doc.get('url'),
+                jobImage: doc.get('url'),
                 jobname: doc.get('jobname'),
                 jobWorkType: doc.get('worktype'),
                 workExperience: doc.get('experience'),
@@ -217,26 +221,40 @@ export default class Feed extends Component {
 
                     this.hireRef.add({
                         userID: auth.currentUser.uid,
-                        job_seeker_name: auth.currentUser.displayName,
+                        job_seeker_name: auth.currentUser.email,
                         jobCreatorID: this.state.jobCreatorID,
                         jobCreatorName: this.state.jobCreatorName,
                         jobDescription: this.state.jobDescription,
-                        job_seekerImage: this.state.job_seekerImage,
+                        job_seekerImage: this.state.jobImage,
                         jobName: this.state.jobname,
                         job_seekerSalary: this.state.job_seeker_salary,
                         jobWorkType: this.state.jobWorkType,                
                         job_qualification: this.state.job_qualification,
                         jobExperience: this.state.workExperience,
                         ref_skills: this.state.skills,
-                        ref_selfDescribe: this.state.selfdescription
-
-
+                        ref_selfDescribe: this.state.selfdescription,
+                        // //jobSeekerId:this.state.userid,
+                        // jobSeekerImage: this.state.jobSeekerImage,
+                        // jobSeekerFullname: this.state.jobSeekerFullname,
+                        // jobSeekerPhoneNumber: this.state.jobSeekerPhoneNumber,
+                        // jobSeekerDescription: this.state.jobSeekerDescription
                     }).then((res) => {
                         this.setState({
                             skills: '',
                             selfdescription: '',
                         });
-                        Alert.alert('Congrats!', 'Your Application Has Been Send To The Job Creator');
+                        Alert.alert('Your Job Has Been Send to Employer', 'Please Choose',
+                        [
+                            {
+                                text: "Return To Main Screen",
+                                onPress: () => this.props.navigation.navigate('Feed')
+                            },
+                            {
+                                text: "View Current Job Posted",
+                                onPress: () => this.props.navigation.navigate('HiringStatus')
+                            }
+                        ], { cancelable: false }
+                    );
                         this.displayModal(!this.state.isVisible);
                         //this.removeItem(this.state.key);
                     })

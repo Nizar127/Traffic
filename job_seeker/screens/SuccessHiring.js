@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 //import { removeStudent } from '../services/DataService';
 import { StyleSheet, Alert, FlatList, View, ActivityIndicator } from 'react-native';
 import { Container, Content, Footer, FooterTab, Button, Icon, Text, List, ListItem, Left, Right, Header, Body } from 'native-base';
-import {auth, firestore, storage,db} from '../config/Firebase';
+import {auth, firestore, storage,db} from '../../config/Firebase';
 
 
 //let job = db.ref('/Job');
@@ -10,7 +10,7 @@ import {auth, firestore, storage,db} from '../config/Firebase';
 export default class SuccessHiring extends Component {
     constructor() {
         super();
-        this.applicationRef = firestore.collection('Job_Hired').where('uid', '==', auth.currentUser.uid);
+        this.applicationRef = firestore.collection('Job_Hired').where('jobCreatorID', '==', auth.currentUser.uid);
         this.state = {
             isLoading: true,
             jobs: []
@@ -97,8 +97,11 @@ export default class SuccessHiring extends Component {
                                         });
                                     }}>
                                     <Left>
-                                        <Text>{item.jobname}</Text>
+                                        <Text>{item.jobName}</Text>
                                     </Left>
+                                    <Body>
+                                        <Text>{item.job_creator_name}</Text>
+                                    </Body>
                                     <Right>
                                         <Icon name="arrow-forward" />
                                     </Right>
@@ -131,14 +134,6 @@ export default class SuccessHiring extends Component {
 
 
 
-                <Footer>
-                    <FooterTab>
-                        <Button vertical onPress={() => { this.props.navigation.navigate('PostJob') }}>
-                            <Icon name="md-briefcase" />
-                            <Text>New Job</Text>
-                        </Button>
-                    </FooterTab>
-                </Footer>
 
             </Container>
         );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     StyleSheet, ScrollView, Image, FlatList,
     UIManager, Animated,
-    LayoutAnimation, TextInput, Modal, TouchableHighlight
+    LayoutAnimation, TextInput, Modal, TouchableHighlight, ActivityIndicator
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import {
@@ -43,8 +43,6 @@ export default class EditProfileJobSeeker extends Component {
         this.state = {
             users: [],
             textInput: [],
-            textInputadd: [],
-            inputDataadd: [],
             inputData: [],
             username: '',
             phonenumber: '',
@@ -327,6 +325,21 @@ export default class EditProfileJobSeeker extends Component {
                         </CardItem>
                     </Card>
 
+                    <CardItem header bordered>
+                            <Text style={styles.MainText}>Phone Number</Text>
+                        </CardItem>
+                        <CardItem cardBody bordered>
+                            <Body>
+                                <View style={styles.inputGroup}>
+                                    <TextInput
+                                        placeholder={'Phonenumber'}
+                                        value={this.state.phonenumber}
+                                        style={styles.startRouteBtn}
+                                        onChangeText={(val) => this.inputValueUpdate(val, 'phonenumber')}
+                                    />
+                                </View>
+                            </Body>
+                        </CardItem>
                     <Card style={{ height: auto }}>
                         <CardItem header bordered>
 
@@ -337,7 +350,7 @@ export default class EditProfileJobSeeker extends Component {
                                 <View style={styles.inputGroup}>
                                     <TextInput
                                         placeholder={'Skills'}
-                                        value={this.state.project}
+                                        value={this.state.skills}
                                         style={styles.startRouteBtn}
                                         onChangeText={(val) => this.inputValueUpdate(val, 'skill')}
                                     />
